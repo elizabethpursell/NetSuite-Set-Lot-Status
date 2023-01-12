@@ -39,7 +39,6 @@ Be sure to note the saved search ID.
 - **Catering the Code to Your NetSuite:**
     - Changing the Saved Search IDs: whenever there is a search load instance (search.load), change the parameter "id" to the correct search ID
 - **Deploying SuiteScript:** go to the SuiteScript file; press the "Deploy Script" button; enter a name and relevant ID; change the status to "Testing"; under "Execute As Role," choose "Administrator" so that the code will get full access to NetSuite and will not create any permissions errors; under "Applies To," select the record type that you want the button to appear on (I used Inventory Number); once the code has been tested, change the status to "Released" and select who can use the button under the "Audience" subtab (selecting "All Roles" will make all users able to use it)
-<img width="947" alt="expired_inventory" src="https://user-images.githubusercontent.com/94419306/210435621-ec2aad57-e13b-4e74-93a7-c15e8c4d2cd3.png">
 
 ## References
 ### Helpful Links

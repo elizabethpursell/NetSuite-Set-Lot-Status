@@ -1,6 +1,4 @@
 # NetSuite-Set-Lot-Status-On-Edit
-Sets the status of Inventory Number records based on expiration date change
-# NetSuite-Update-Expired-Status
 ## Project Overview
 <img width="949" alt="editStatus" src="https://user-images.githubusercontent.com/94419306/212151556-1f6380d2-5f79-440f-9e2e-a192b22a55ba.png">
 

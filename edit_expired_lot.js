@@ -2,7 +2,7 @@
  *@NApiVersion 2.x
  *@NScriptType UserEventScript
  */
-define(['N/search', 'N/record', 'N/format'], function(search, record, format) {
+ define(['N/search', 'N/record', 'N/format'], function(search, record, format) {
     function afterSubmit(context) {
         var currentRecord = context.newRecord;
         var oldRecord = context.oldRecord;
@@ -33,10 +33,10 @@ define(['N/search', 'N/record', 'N/format'], function(search, record, format) {
         var itemName = oldRecord.getText({
             fieldId: "itemname"
         });
-        var quantitySearch = search.load({
+        var quantitySearch = search.load({          //load search for inventory number's bin quantities
             id: 'customsearchedit_quantity'
         });
-        var itemFilter = search.createFilter({
+        var itemFilter = search.createFilter({          //add filters to find all bins for specific inventory number
             name: "itemid",
             operator: search.Operator.IS,
             values: [itemName]
@@ -49,9 +49,8 @@ define(['N/search', 'N/record', 'N/format'], function(search, record, format) {
             values: [parseInt(lotName)]
         });
         quantitySearch.filters.push(lotFilter);
-        quantitySearch.run().each(function(result){
+        quantitySearch.run().each(function(result){         //for each search result, try to create inventory status change
             if(result != null && result != ''){
-                log.error("Searching");
                 var quantity = result.getValue({
                     name: quantityType,
                     join: "inventoryNumberBinOnHand"
@@ -101,17 +100,19 @@ define(['N/search', 'N/record', 'N/format'], function(search, record, format) {
             fieldId: "quantity",
             value: parseInt(quantity)
         });
-        var subRecordData = createSubrecord(parentRecord, lotNum, binNum, quantity);
+
+        var subRecordData = createSubrecord(parentRecord, lotNum, binNum, quantity);        //create inventory detail subrecord
+
         if(subRecordData.added){
             log.error("Saving Record");
-            subRecordData.parentRecord.commitLine({       //line commits if all field values were successfully filled
+            subRecordData.parentRecord.commitLine({       //save record and subrecord if all fields were completed
                 sublistId: "inventory"
             });
             subRecordData.parentRecord.save();
         }
         else{
             log.error("Unable to commit subrecord");
-            subRecordData.parentRecord.cancelLine({           //delete subrecord if not committed
+            subRecordData.parentRecord.cancelLine({           //delete subrecord if fields not complete
                 sublistId:"inventory"
             });
         }
@@ -133,7 +134,7 @@ define(['N/search', 'N/record', 'N/format'], function(search, record, format) {
             });
         }
         catch(err){
-            log.error("Lot Number not an option");
+            log.error("Lot Number not an option");      //break if lot number not added
             return {
                 "added": false,
                 "parentRecord": parentRecord,
@@ -157,7 +158,7 @@ define(['N/search', 'N/record', 'N/format'], function(search, record, format) {
                 });
             }
             catch(err){
-                log.error("Bin number not an option");
+                log.error("Bin number not an option");      //break if bin number not added
                 return {
                     "added": false,
                     "parentRecord": parentRecord,
@@ -169,7 +170,7 @@ define(['N/search', 'N/record', 'N/format'], function(search, record, format) {
             log.error("Bin number not needed");
         }
         try{
-            subRecord.setCurrentSublistValue({
+            subRecord.setCurrentSublistValue({              //set quantity if valid
                 sublistId: "inventoryassignment",
                 fieldId: "quantity",
                 value: parseInt(quantity)
@@ -179,14 +180,14 @@ define(['N/search', 'N/record', 'N/format'], function(search, record, format) {
             });
         }
         catch(err){
-            log.error("Invalid Quantity");
+            log.error("Invalid Quantity");          //break if quantity invalid
             return {
                 "added": false,
                 "parentRecord": parentRecord,
                 "subRecord": subRecord
             };
         }
-        return {
+        return {                    //return with added = true
             "added": true,
             "parentRecord": parentRecord,
             "subRecord": subRecord
